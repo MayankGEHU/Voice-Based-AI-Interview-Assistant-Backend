@@ -1,6 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import fetch from "node-fetch"; // ensure node-fetch v3+
 
 dotenv.config();
 
@@ -12,8 +13,6 @@ app.post("/api/ask", async (req, res) => {
   const { question } = req.body;
 
   try {
-    const fetch = (await import("node-fetch")).default;
-
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -28,13 +27,12 @@ app.post("/api/ask", async (req, res) => {
           messages: [
             {
               role: "system",
-     content: `You are a concise and friendly AI interview assistant.
+              content: `You are a concise and friendly AI interview assistant.
 - Always answer clearly and simply.
 - Use short sentences and avoid technical jargon.
 - Limit your answer to 2-4 lines maximum.
 - If needed, use bullet points for clarity.
 - Do not over-explain.`,
-
             },
             { role: "user", content: question },
           ],
@@ -58,6 +56,7 @@ app.post("/api/ask", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Backend running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`✅ Backend running on http://localhost:${PORT}`);
 });
